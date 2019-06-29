@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.dao.Thing_MajorDao">
+	<resultMap type="Thing_Major" id="Thing_MajorResult">
+		<association property="thing" column="thingId" select="cn.edu.guet.dao.ThingDao.getThingById"></association>
+		<association property="major" column="majorId" select="cn.edu.guet.dao.MajorDao.getMajorById"></association>
+	</resultMap>
+	<resultMap type="Thing" id="ThingResult2">
+		<result property="id" column="id"/>
+		<result property="thingName" column="thingName"/>
+	</resultMap> 
+	<select id="getThingsByMajorId" parameterType="Integer" resultMap="ThingResult2">
+		SELECT t.*, mt.majorId
+		FROM t_thing t, major_thing mt
+		WHERE t.id=mt.thingId AND mt.majorId=#{id}
+	</select>
+	<insert id="addThing_Major" parameterType="Map">
+		insert into major_thing(majorId,thingId) values(#{majorId},#{thingId}) 
+	</insert>
+	<delete id="deleteThing_Major" parameterType="Map">
+		delete from major_thing where majorId=#{majorId} and thingId=#{thingId}
+	</delete>
+</mapper>

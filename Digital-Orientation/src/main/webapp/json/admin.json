@@ -1,0 +1,20 @@
+[
+	{
+		"id": "100",
+		"pId": "100",
+		"name": "系统管理",
+		"page": ""
+	},
+	{
+		"id": "1001",
+		"pId": "100",
+		"name": "用户管理",
+		"page": "page/userManage.jsp"
+	},
+	{
+		"id": "1003",
+		"pId": "100",
+		"name": "角色管理",
+		"page": "page/roleManage.jsp"
+	}
+]

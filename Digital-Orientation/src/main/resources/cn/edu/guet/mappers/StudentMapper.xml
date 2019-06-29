@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.dao.StudentDao">
+	<resultMap type="Student" id="StudentResult">
+		<result property="id" column="id"/>
+		<result property="studentId" column="studentId"/>
+		<result property="studentName" column="studentName"/>
+		<result property="phone" column="phone"/>
+		<result property="score" column="score"/>
+		<result property="thing" column="thing"/>
+		<result property="gender" column="gender"/>
+		<result property="nation" column="nation"/>
+		<result property="political" column="political"/>
+		<result property="archives" column="archives"/>
+		<result property="highsc" column="highsc"/>
+		<result property="birth" column="birth"/>
+		<result property="IDCard" column="IDCard"/>
+		<result property="address" column="address"/>
+		<result property="ticket" column="ticket"/>
+		<result property="noticeNO" column="noticeNO"/>
+		<result property="register" column="register"/>
+		<result property="one_card_pass" column="one_card_pass"/>
+		<result property="green_channel" column="green_channel"/>
+		<result property="registerComplete" column="registerComplete"/>
+		<association property="major" column="majorId" select="cn.edu.guet.dao.MajorDao.getMajorById"></association>
+	</resultMap>
+	<select id="getStudentByPage" parameterType="Map" resultMap="StudentResult">
+		select * from t_student
+		<where>
+			<if test="majorId!=null">
+				and majorId=#{majorId}
+			</if>
+			<if test="studentId!=null and studentId!=''">
+				and studentId like '%${studentId}%'
+			</if>
+			<if test="stuName!=null and stuName!=''">
+				and studentName like '%${stuName}%'
+			</if>
+		</where>
+		order by studentId asc
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	<select id="getStudentByMap" parameterType="Map" resultMap="StudentResult">
+		select * from t_student
+		<where>
+			<if test="majorId!=null">
+				and majorId=#{majorId}
+			</if>
+			<if test="studentId!=null and studentId!=''">
+				and studentId like '%${studentId}%'
+			</if>
+			<if test="stuName!=null and stuName!=''">
+				and studentName like '%${stuName}%'
+			</if>
+		</where>
+		order by studentId asc
+	</select>
+	<select id="getTotal" parameterType="Map" resultType="Integer">
+		select count(*) from t_student
+		<where>
+			<if test="majorId!=null">
+				and majorId=#{majorId}
+			</if>
+			<if test="studentId!=null and studentId!=''">
+				and studentId like '%${studentId}%'
+			</if>
+			<if test="stuName!=null and stuName!=''">
+				and studentName like '%${stuName}%'
+			</if>
+		</where>
+	</select>
+	<insert id="addStudent" parameterType="Student">
+		insert into
+		t_student(id,studentId,studentName,majorId,highsc,score,gender,IDCard,ticket,birth)
+		values(null,#{studentId},#{studentName},#{major.id},#{highsc},#{score},#{gender},#{IDCard},#{ticket},#{birth})
+	</insert>
+	<select id="getStudentByStuid" parameterType="String" resultMap="StudentResult">
+		select * from t_student where studentId=#{stuId}
+	</select>
+	
+	<select id="getStudentByMajor" parameterType="Major" resultMap="StudentResult">
+		select * from t_student where majorId=#{major.id}
+	</select>
+	
+	<select id="getMajorByUserName" parameterType="String" resultMap="StudentResult">
+		select * from t_student where userName=#{userName}
+	</select>
+	 <update id="updateStudent" parameterType="Student">
+		update t_student
+		<set>
+			<if test="studentId!=null and studentId!=''">
+				studentId=#{studentId},
+			</if>
+			<if test="studentName!=null and studentName!=''">
+				studentName=#{studentName},
+			</if>
+			<if test="gender!=null">
+				gender=#{gender},
+			</if>
+			<if test="IDCard!=null and IDCard!=''">
+				IDCard=#{IDCard},
+			</if>
+			<if test="birth!=null">
+				birth=#{birth},
+			</if>
+			<if test="highsc!=null and highsc!=''">
+				highsc=#{highsc},
+			</if>
+			<if test="score!=null">
+				score=#{score},
+			</if>
+			<if test="ticket!=null and ticket!=''">
+				ticket=#{ticket},
+			</if>
+			<if test="archives!=null">
+				archives=#{archives},
+			</if>
+			<if test="phone!=null and phone!=''">
+				phone=#{phone},
+			</if>
+			<if test="major.id!=null">
+				majorId=#{major.id},
+			</if>
+			<if test="nation!=null and nation!=''">
+				nation=#{nation},
+			</if>
+			<if test="political!=null and political!=''">
+				political=#{political},
+			</if>
+			<if test="address!=null and address!=''">
+				address=#{address},
+			</if>
+			<if test="register!=null">
+				register=#{register},
+			</if>
+			<if test="green_channel!=null">
+				green_channel=#{green_channel},
+			</if>
+			<if test="noticeNO!=null and noticeNO!=''">
+				noticeNO=#{noticeNO},
+			</if>
+			<!-- <if test="paiedTuition!=null">
+				paiedTuition=#{paiedTuition}
+			</if> -->
+		</set>
+		where id=#{id}
+	</update>
+	<select id="getStudentById" parameterType="Integer" resultMap="StudentResult">
+		select * from t_student where id=#{id}
+	</select>
+	<update id="updateThing" parameterType="Map">
+		update t_student
+		<set>
+			<if test="thing!=null">
+				thing=#{thing}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<select id="getStudentByIDCard" parameterType="String" resultMap="StudentResult">
+		select * from t_student where IDCard=#{IDCard}
+	</select>
+	
+	<select id="getStudentByNotice" parameterType="Map" resultMap="StudentResult">
+		select * from t_student
+		<where>
+			<if test="noticeNO != null and noticeNO !=''">
+				and noticeNO like '%${noticeNO}%'
+			</if>
+		</where>
+</select>
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.dao.PayRecordDao">
+	<resultMap type="PayRecord" id="PayRecordResult">
+		<result property="id" column="id" />
+		<result property="amount" column="amount" />
+		<result property="voucher" column="voucher" />
+		<result property="createtime" column="createtime" />
+		<result property="way" column="way" />
+		<association property="user" column="userId"
+			select="cn.edu.guet.dao.UserDao.getUserById"></association>
+		<association property="student" column="stuId"
+			select="cn.edu.guet.dao.StudentDao.getStudentById"></association>
+	</resultMap>
+	<insert id="addPayRecord" parameterType="Map">
+		insert into
+		t_pay_record(id,userId,stuId,amount,createtime,way,voucher) values(null,#{userId},#{stuId},#{amount},now(),#{way},#{voucher})
+	</insert>
+	<select id="getPayRecordByStuId" parameterType="Integer" resultMap="PayRecordResult">
+		select * from t_pay_record where stuId=#{stuId}
+	</select>
+	<select id="getPayRecordByPage" parameterType="Map" resultMap="PayRecordResult">
+		select * from t_pay_record
+		<where> 
+			<if test="majorId!=null and majorId!=''">
+				and stuId in(select id from t_student where majorId=#{majorId})
+			</if>
+			<if test="studentId!=null and studentId!=''">
+				and stuId in(select id from t_student where studentId like '%${studentId}%')
+			</if>
+			<if test="stuName!=null and stuName!=''">
+				and stuId in(select id from t_student where studentName like '%${stuName}%')
+			</if>
+		</where>
+		order by createtime desc
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	<select id="getTotal" parameterType="Map" resultType="Integer">
+		select count(*) from t_pay_record
+		<where> 
+			<if test="majorId!=null and majorId!=''">
+				and stuId in(select id from t_student where majorId=#{majorId})
+			</if>
+			<if test="studentId!=null and studentId!=''">
+				and stuId in(select id from t_student where studentId like '%${studentId}%')
+			</if>
+			<if test="stuName!=null and stuName!=''">
+				and stuId in(select id from t_student where studentName like '%${stuName}%')
+			</if>
+		</where>
+	</select>
+	<delete id="delete" parameterType="Integer">
+		delete from t_pay_record where id=#{id}
+	</delete>
+	<update id="update" parameterType="Map">
+		update t_pay_record
+		<set>
+			<if test="amount!=null and amount!=''">
+				amount=#{amount},
+			</if>
+			<if test="voucher!=null and voucher!=''">
+				voucher=#{voucher}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+</mapper>

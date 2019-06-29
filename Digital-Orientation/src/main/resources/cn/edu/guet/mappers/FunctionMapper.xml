@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.dao.FunctionDao">
+	<resultMap type="Function" id="FunctionResult">
+		<result property="id" column="id" />
+		<result property="url" column="url" />
+		<result property="generatemenu" column="generatemenu" />
+		<result property="privilegeName" column="privilegeName" />
+		<result property="pId" column="pId" />
+		<result property="zindex" column="zindex" />
+	</resultMap>
+	<select id="getFunctionById" parameterType="Integer" resultMap="FunctionResult">
+		select * from t_privilege where id=#{id}
+	</select>
+	<select id="getAllMenu" resultMap="FunctionResult">
+		select * from t_privilege
+	</select>
+
+	<select id="getMenuByUserId" parameterType="Integer" resultMap="FunctionResult">
+		SELECT DISTINCT f.* FROM t_role r,t_privilege f,role_privilege rf
+		WHERE
+		r.id=rf.roleId AND f.id = rf.privilegeId AND r.id IN(
+		SELECT r.id
+		FROM
+		t_user u,t_role r,role_user ur WHERE u.id
+		= ur.userId AND r.id =
+		ur.roleId AND u.id =#{userId});
+	</select>
+	<select id="getParentMenu" parameterType="Integer" resultMap="FunctionResult">
+		SELECT DISTINCT * FROM t_privilege WHERE id IN
+		(SELECT DISTINCT f.pId FROM t_role r,t_privilege f,role_privilege rf
+		WHERE r.id=rf.roleId AND f.id = rf.privilegeId AND r.id IN(
+		SELECT r.id
+		FROM t_user u,t_role r,role_user ur WHERE u.id
+		= ur.userId AND r.id =
+		ur.roleId AND u.id =#{userId}));
+	</select>
+	<select id="getAllFunction" resultMap="FunctionResult">
+		select * from t_privilege where pId is not null
+	</select>
+</mapper>

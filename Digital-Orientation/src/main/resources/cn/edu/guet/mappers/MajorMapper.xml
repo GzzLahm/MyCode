@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.dao.MajorDao">
+	<resultMap type="Major" id="MajorResult">
+		<result property="id" column="id"/>
+		<result property="majorName" column="majorName"/>
+		<result property="tuition" column="tuition"/>
+		<association property="college" column="collegeId" select="cn.edu.guet.dao.CollegeDao.getCollegeById"/>
+		<collection property="things" column="id"
+			select="cn.edu.guet.dao.Thing_MajorDao.getThingsByMajorId" />
+	</resultMap>
+	<select id="getMajorById" parameterType="Integer" resultMap="MajorResult">
+		select * from t_major where id=#{id}
+	</select>
+	<insert id="addMajor" parameterType="Major">
+		insert into t_major(id,majorName,collegeId) values(null,#{majorName},#{college.id})
+	</insert>
+	<update id="updateMajor" parameterType="Major">
+		update t_major
+		<set>
+			<if test="majorName!=null and majorName!=''">
+				majorName=#{majorName},
+			</if>
+			<if test="tuition!=null and tuition &gt; 0 ">
+				tuition=#{tuition}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<select id="getMajorByName" parameterType="String" resultMap="MajorResult">
+		select * from t_major where majorName=#{name}
+	</select>
+	
+	<select id="getMajorByMap" parameterType="Map" resultMap="MajorResult">
+		select * from t_major
+		<where>
+			<if test="collegeId!=null">
+				and collegeId=#{collegeId}
+			</if>
+			<if test="majorName!=null">
+				and majorName like '%${majorName}%'
+			</if>
+		</where>
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	
+	<select id="getTotal" parameterType="Map" resultType="Integer">
+		select count(*) from t_major
+		<where>
+			<if test="collegeId!=null">
+				and collegeId=#{collegeId}
+			</if>
+			<if test="majorName!=null">
+				and majorName like '%${majorName}%'
+			</if>
+		</where>
+	</select>
+</mapper>

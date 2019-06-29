@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.dao.UserRoleDao">
+	<resultMap type="UserRole" id="UserRoleResult">
+		<association property="user" column="userId" select="cn.edu.guet.dao.UserDao.getUserById"></association>
+		<association property="role" column="roleId" select="cn.edu.guet.dao.RoleDao.getRoleById"></association>
+	</resultMap>
+	<resultMap type="Role" id="RoleResult2">
+		<result property="id" column="id"/>
+		<result property="roleName" column="roleName"/>
+		<result property="description" column="description"/>
+	</resultMap>
+	<select id="getRolesByUserId" parameterType="Integer" resultMap="RoleResult2">
+		SELECT r.*, ru.userId
+		FROM t_role r, role_user ru
+		WHERE r.id=ru.roleId AND ru.userId=#{id}
+	</select>
+	<delete id="deleteByUserId" parameterType="Integer">
+		delete from role_user where userId=#{userId}
+	</delete>
+	<insert id="add" parameterType="Map">
+		insert into role_user(userId,roleId) values(#{userId},#{roleId})
+	</insert>
+	<delete id="deleteRole" parameterType="Map">
+		delete from role_user
+		<where>
+			<if test="userId!=null and userId!=''">
+				and userId=#{userId}
+			</if>
+			<if test="roleId!=null and roleId!=''">
+				and roleId=#{roleId}
+			</if>
+		</where>
+	</delete>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.guet.dao.RoleFunctionDao">
+	<resultMap type="RoleFunction" id="RoleFunctionResult">
+		<association property="role" column="roleId" select="cn.edu.guet.dao.RoleDao.getRoleById"></association>
+		<association property="function" column="privilegeId" select="cn.edu.guet.dao.FunctionDao.getFunctionById"></association>
+		
+	</resultMap>
+	<select id="RoleFunction" parameterType="Map" resultMap="RoleFunctionResult">
+		select * from role_privilege where roleId=#{roleId} and privilegeId=#{functionId}
+	</select>
+	<insert id="add" parameterType="Map">
+		insert into role_privilege(roleId,privilegeId) values(#{roleId},#{functionId})
+	</insert>
+	<select id="getByMap" parameterType="Map" resultMap="RoleFunctionResult">
+		select * from role_privilege where roleId=#{roleId} and privilegeId=#{functionId}
+	</select>
+</mapper>
